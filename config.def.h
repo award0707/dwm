@@ -19,9 +19,9 @@ static const char *colors[][3]      = {
 };
 
 static const char *const autostart[] = {
+	"random_wallpaper.sh", NULL,
 	"picom", NULL,
 	"alacritty", NULL,
-	"random_wallpaper.sh", NULL,
 	NULL /* terminate */
 };
 
@@ -69,6 +69,7 @@ static const char *termcmd[]  = { "alacritty", NULL };
 
 #include "selfrestart.c"
 
+#include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -104,7 +105,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_r,      self_restart,   {0} },
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_e,      exitdwm,        {0} },
 };
 
 /* button definitions */
