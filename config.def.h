@@ -19,7 +19,7 @@ static const char *colors[][3]      = {
 };
 
 static const char *const autostart[] = {
-	"sh", "-c", "sleep 3; random_wallpaper.sh", NULL,
+	"sh", "-c", "random_wallpaper.sh", NULL,
 	"picom", NULL,
 	"alacritty", NULL,
 	NULL /* terminate */
