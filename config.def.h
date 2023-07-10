@@ -22,7 +22,7 @@ static char *colors[][3] = {
 static const char *const autostart[] = {
 	"sh", "-c", "random_wallpaper.sh", NULL,
 	"picom", NULL,
-	"alacritty", NULL,
+//	"alacritty", NULL,
 	NULL /* terminate */
 };
 
