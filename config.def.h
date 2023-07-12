@@ -13,8 +13,7 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Font Awesome:size=12",
-					"monospace:size=10",
-				      };
+				        "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
@@ -29,10 +28,10 @@ static char *colors[][3] = {
 };
 
 static const char *const autostart[] = {
-	"autorandr", "3monscaled", NULL,
-	"sh", "-c", "as.sh", NULL,
+	"autorandr; sleep 1", "3monscaled", NULL,
 	"picom", NULL,
-//	"alacritty", NULL,
+	"rsblocks", NULL,
+	"sh", "-c", "as.sh", NULL,
 	NULL /* terminate */
 };
 
