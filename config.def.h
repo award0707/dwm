@@ -6,7 +6,7 @@ static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default
 static const unsigned int gappx[]   = { 20 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
-static const unsigned int systrayonleft = 0;    /* 0: systray in the right corner, >0: systray on left of status text */
+static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;        /* 0 means no systray */
@@ -30,7 +30,6 @@ static char *colors[][3] = {
 static const char *const autostart[] = {
 	"autorandr; sleep 1", "3monscaled", NULL,
 	"picom", NULL,
-	"rsblocks", NULL,
 	"sh", "-c", "as.sh", NULL,
 	NULL /* terminate */
 };
@@ -158,4 +157,3 @@ static IPCCommand ipccommands[] = {
 //  IPCCOMMAND(  setlayoutsafe,       1,      {ARG_TYPE_PTR}    ),
 //  IPCCOMMAND(  quit,                1,      {ARG_TYPE_NONE}   )
 };
-
