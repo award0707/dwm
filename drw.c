@@ -134,11 +134,11 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
 	}
 
 	// prevent using color font, will this fix my crashes?
-	FcBool iscol;
-	if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
-		XftFontClose(drw->dpy, xfont);
-		return NULL;
-	}
+//	FcBool iscol;
+//	if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
+//		XftFontClose(drw->dpy, xfont);
+//		return NULL;
+//	}
 
 	font = ecalloc(1, sizeof(Fnt));
 	font->xfont = xfont;
