@@ -240,6 +240,7 @@ static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
 static Monitor *createmon(void);
+static void deck(Monitor *m);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
@@ -307,6 +308,7 @@ static void sighup(int unused);
 static void sigterm(int unused);
 static void spawn(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
+static void switchcol(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
@@ -669,9 +671,15 @@ buttonpress(XEvent *e)
 		stw = 0;
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
-		do
+		unsigned int occ = 0;
+		for(c = m->clients; c; c=c->next)
+			occ |= c->tags;
+		do {
+			/* Do not reserve space for vacant tags */
+			if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+				continue;
 			x += TEXTW(tags[i]);
-		while (ev->x >= x && ++i < LENGTH(tags));
+		} while (ev->x >= x && ++i < LENGTH(tags));
 		if (i < LENGTH(tags)) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
@@ -994,6 +1002,32 @@ createmon(void)
 }
 
 void
+deck(Monitor *m)
+{
+	unsigned int i, n, h, mw, my;
+	Client *c;
+
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if(n == 0)
+		return;
+
+	if(n > m->nmaster) {
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n - m->nmaster);
+	}
+	else
+		mw = m->ww;
+	for(i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if(i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), False);
+			my += HEIGHT(c);
+		}
+		else
+			resize(c, m->wx + mw, m->wy, m->ww - mw - (2*c->bw), m->wh - (2*c->bw), False);
+}
+
+void
 destroynotify(XEvent *e)
 {
 	Client *c;
@@ -1221,13 +1255,12 @@ drawbar(Monitor *m)
 	}
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
+		/* Do not draw vacant tags */
+		if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+			continue;
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
 		x += w;
 	}
 	w = blw = TEXTW(m->ltsymbol);
@@ -2537,6 +2570,35 @@ spawn(const Arg *arg)
 		fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[0]);
 		perror(" failed");
 		exit(EXIT_SUCCESS);
+	}
+}
+
+void
+switchcol(const Arg *arg)
+{
+	Client *c, *t;
+	int col = 0;
+	int i;
+
+	if (!selmon->sel)
+	        return;
+	for (i = 0, c = nexttiled(selmon->clients); c ;
+		     c = nexttiled(c->next), i++) {
+	        if (c == selmon->sel)
+		         col = (i + 1) > selmon->nmaster;
+	}
+	if (i <= selmon->nmaster)
+	        return;
+	for (c = selmon->stack; c; c = c->snext) {
+	        if (!ISVISIBLE(c))
+	         continue;
+       for (i = 0, t = nexttiled(selmon->clients); t && t != c;
+       	             t = nexttiled(t->next), i++);
+       if (t && (i + 1 > selmon->nmaster) != col) {
+	         focus(c);
+	         restack(selmon);
+	         break;
+	        }
 	}
 }
 
