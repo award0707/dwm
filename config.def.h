@@ -3,7 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 20 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0, 20, 20, 0, 10, 50, 20 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -13,11 +13,11 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:size=10",
-					"Noto Color Emoji:pixelsize=20",
-					"Font Awesome:size=12",
+static const char *fonts[]          = { "Liberation Mono:size=8",
+					"Noto Color Emoji:pixelsize=16",
+					"Font Awesome:size=10",
 					};
-static const char dmenufont[]       = "monospace:size=10";
+static const char dmenufont[]       = "monospace:size=8";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -49,7 +49,7 @@ static const char *const autostart[] = {
 };
 
 /* tagging */
-static const char *tags[] = { "1:code", "2:browse", "3:write", "4:read", "5:chat", "6:plan", "7:listen" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -145,8 +145,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = +1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } },
-	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
+	{ MODKEY,                       XK_minus,  setgaps,        {.i = -10 } },
+	{ MODKEY,                       XK_equal,  setgaps,        {.i = +10 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
@@ -183,8 +183,8 @@ static const Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkLtSymbol,          0,              Button4,        cyclelayout,    {.i = -1 } },
-	{ ClkLtSymbol,          0,              Button5,        cyclelayout,    {.i = +1 } },
+	{ ClkLtSymbol,          0,              Button1,        cyclelayout,    {.i = +1 } },
+	{ ClkLtSymbol,          0,              Button3,        cyclelayout,    {.i = -1 } },
 };
 
 static const char *ipcsockpath = "/tmp/dwm.sock";
