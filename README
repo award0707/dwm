@@ -46,3 +46,15 @@ Configuration
 -------------
 The configuration of dwm is done by creating a custom config.h
 and (re)compiling the source code.
+
+my changes
+----------
+if you got lost and encountered this repo,
+and you are insane enough to try to use my personal hack of dwm,
+check the diffs/ directory to see what patches i added.
+i think it's a pretty good version of dwm. after all, i customized it for me.
+
+i have some scripts i use to swap themes using the xrdb and ipc patches, i
+doubt even 1 soul will find this but if you are interested make an issue and
+i'll publish them.
+
