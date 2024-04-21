@@ -13,7 +13,7 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:size=8",
+static const char *fonts[]          = { "Liberation Mono:size=10",
 					"SymbolsNerdFont:size=10",
 					"Noto Color Emoji:pixelsize=16",
 					};
@@ -41,9 +41,8 @@ static char *colors[][3] = {
 };
 
 static const char *const autostart[] = {
-	//"autorandr", "3monscaled", NULL,
+	"3bgs.sh", NULL,
 	"picom", NULL,
-	"dwmblocks", NULL,
 	"xbanish", NULL,
 	NULL /* terminate */
 };
@@ -103,7 +102,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", 
 static const char *drundmenucmd[] = { "dmenu_drun", NULL };
 //static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
+//static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
 static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *themesel[] = { "theme", NULL }; // my shell script
@@ -116,7 +115,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = scrotcmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
-	{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
+	//{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
