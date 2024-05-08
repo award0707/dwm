@@ -99,12 +99,14 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", NULL };
+//static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", NULL };
 static const char *drundmenucmd[] = { "dmenu_drun", NULL };
 //static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
 static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
+static const char *speedcrunchcmd[] = { "speedcrunch", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *themesel[] = { "theme", NULL }; // my shell script
 
@@ -116,6 +118,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = scrotcmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
+	{ MODKEY|ShiftMask,             XK_KP_Add, spawn,          {.v = speedcrunchcmd } },
 	{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
