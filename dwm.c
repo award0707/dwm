@@ -265,6 +265,7 @@ static unsigned int getsystraywidth();
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void gridstack(Monitor *m);
 static int handlexevent(struct epoll_event *ev);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
@@ -1608,6 +1609,84 @@ grabkeys(void)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
 						True, GrabModeAsync, GrabModeAsync);
+	}
+}
+
+void
+gridstack(Monitor *m)
+{
+	unsigned int cols, rows, cn, rn, cw, ch, cx, cy, nstack;
+	unsigned int i, n, h, mw, my;
+	unsigned int gap;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	gap = m->pertag->drawwithgaps[m->pertag->curtag] ? m->pertag->gappx[m->pertag->curtag] : 0;
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww - gap;
+
+	nstack = n - m->nmaster;
+
+	/* grid dimensions */
+	for(cols = 0; cols <= nstack/2; cols++)
+		if(cols*cols >= nstack)
+			break;
+	if(nstack == 5) /* set layout against the general calculation: not 1:2:2, but 2:3 */
+		cols = 2;
+	rows = cols ? nstack/cols : 0;
+
+	/* window geometries */
+	cw = (cols ? (m->ww - mw - gap) / cols : (m->ww - mw - gap));
+	cn = 0; /* current column number */
+	rn = 0; /* current row number */
+
+	if (gap) {
+		for (i = 0, my = gap, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+			if (i < m->nmaster) {
+				h = (m->wh - my) / (MIN(n, m->nmaster) - i) - gap;
+				resize(c, m->wx + gap, m->wy + my, mw - 2*c->bw - gap, h - 2*c->bw, False);
+				if (my + HEIGHT(c) + gap < m->wh)
+					my += HEIGHT(c) + gap;
+			} else {
+				if((i - m->nmaster)/rows + 1 > cols - nstack%cols)
+					rows = nstack/cols + 1;
+				ch = rows ? (m->wh - gap) / rows : m->wh - gap;
+				cx = m->wx + mw + cn*cw;
+				cy = m->wy + rn*ch;
+				resize(c, cx + gap, cy + gap, cw - 2 * c->bw - gap, ch - 2 * c->bw - gap, False);
+				++rn;
+				if(rn >= rows) {
+					rn = 0;
+					cn++;
+				}
+			}
+	} else {
+		for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+			if (i < m->nmaster) {
+				h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+				if (n == 1)
+					resize(c, m->wx - c->bw, m->wy, m->ww - c->bw, m->wh - c->bw, False);
+				else
+					resize(c, m->wx - c->bw, m->wy + my, mw - c->bw, h - c->bw, False);
+				my += HEIGHT(c) - c->bw;
+			} else {
+				if((i - m->nmaster)/rows + 1 > cols - nstack%cols)
+					rows = nstack/cols + 1;
+				ch = rows ? m->wh / rows : m->wh;
+				cx = m->wx + mw + cn*cw;
+				cy = m->wy + rn*ch;
+				resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, False);
+				++rn;
+				if(rn >= rows) {
+					rn = 0;
+					cn++;
+				}
+			}
 	}
 }
 
