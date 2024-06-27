@@ -1615,6 +1615,7 @@ grabkeys(void)
 void
 gridstack(Monitor *m)
 {
+	/* hack the tile and grid layouts together */
 	unsigned int cols, rows, cn, rn, cw, ch, cx, cy, nstack;
 	unsigned int i, n, h, mw, my;
 	unsigned int gap;
@@ -1633,11 +1634,11 @@ gridstack(Monitor *m)
 	nstack = n - m->nmaster;
 
 	/* grid dimensions */
-	for(cols = 0; cols <= nstack/2; cols++)
-		if(cols*cols >= nstack)
-			break;
-	if(nstack == 5) /* set layout against the general calculation: not 1:2:2, but 2:3 */
-		cols = 2;
+	if (nstack <= 2) cols = 1; /* override grid calc for these cases */
+	else if (nstack <= 5) cols = 2;
+	else
+		for(cols = 0; cols <= nstack/2; cols++)
+			if(cols*cols >= nstack) break;
 	rows = cols ? nstack/cols : 0;
 
 	/* window geometries */
@@ -1645,7 +1646,7 @@ gridstack(Monitor *m)
 	cn = 0; /* current column number */
 	rn = 0; /* current row number */
 
-	if (gap) {
+	if (m->pertag->drawwithgaps[m->pertag->curtag]) {
 		for (i = 0, my = gap, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 			if (i < m->nmaster) {
 				h = (m->wh - my) / (MIN(n, m->nmaster) - i) - gap;

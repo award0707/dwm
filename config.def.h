@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 0, 20, 20, 0, 10, 40, 20, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const int startwithgaps[]    = { 0 };	/* 1 means gaps are used by default, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -22,7 +22,7 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#005577";
+static char selbordercolor[]        = "#0088aa";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -45,6 +45,7 @@ static const char *const autostart[] = {
 	"picom", NULL,
 	"dwmblocks", NULL,
 	"xbanish", NULL,
+	"/home/wardac/.local/bin/3bgs.sh",
 	NULL /* terminate */
 };
 
