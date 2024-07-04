@@ -1616,7 +1616,7 @@ void
 gridstack(Monitor *m)
 {
 	/* hack the tile and grid layouts together */
-	unsigned int cols, rows, cn, rn, cw, ch, cx, cy, nstack;
+	unsigned int cols, rows, cn, rn, rh, cw, cx, cy, nstack;
 	unsigned int i, n, h, mw, my;
 	unsigned int gap;
 	Client *c;
@@ -1634,15 +1634,14 @@ gridstack(Monitor *m)
 	nstack = n - m->nmaster;
 
 	/* grid dimensions */
-	if (nstack <= 2) cols = 1; /* override grid calc for these cases */
-	else if (nstack <= 5) cols = 2;
+	if (nstack == 3 || nstack == 5) rows = 2; /* override grid calc for these cases */
 	else
-		for(cols = 0; cols <= nstack/2; cols++)
-			if(cols*cols >= nstack) break;
-	rows = cols ? nstack/cols : 0;
+		for(rows = 0; rows <= nstack/2; rows++)
+			if(rows*rows >= nstack) break;
+	cols = rows ? nstack/rows : 0;
 
 	/* window geometries */
-	cw = (cols ? (m->ww - mw - gap) / cols : (m->ww - mw - gap));
+	rh = rows ? (m->wh - gap)/rows : m->wh - gap;
 	cn = 0; /* current column number */
 	rn = 0; /* current row number */
 
@@ -1654,16 +1653,16 @@ gridstack(Monitor *m)
 				if (my + HEIGHT(c) + gap < m->wh)
 					my += HEIGHT(c) + gap;
 			} else {
-				if((i - m->nmaster)/rows + 1 > cols - nstack%cols)
-					rows = nstack/cols + 1;
-				ch = rows ? (m->wh - gap) / rows : m->wh - gap;
+				if((i - m->nmaster)/cols + 1 > rows - nstack%rows)
+					cols = nstack/rows + 1;
+				cw = cols ? (m->ww - mw - gap) / cols : m->ww - mw - gap;
 				cx = m->wx + mw + cn*cw;
-				cy = m->wy + rn*ch;
-				resize(c, cx + gap, cy + gap, cw - 2 * c->bw - gap, ch - 2 * c->bw - gap, False);
-				++rn;
-				if(rn >= rows) {
-					rn = 0;
-					cn++;
+				cy = m->wy + rn*rh;
+				resize(c, cx + gap, cy + gap, cw - 2 * c->bw - gap, rh - 2 * c->bw - gap, False);
+				++cn;
+				if(cn >= cols) {
+					cn = 0;
+					rn++;
 				}
 			}
 	} else {
@@ -1676,16 +1675,16 @@ gridstack(Monitor *m)
 					resize(c, m->wx - c->bw, m->wy + my, mw - c->bw, h - c->bw, False);
 				my += HEIGHT(c) - c->bw;
 			} else {
-				if((i - m->nmaster)/rows + 1 > cols - nstack%cols)
-					rows = nstack/cols + 1;
-				ch = rows ? m->wh / rows : m->wh;
+				if((i - m->nmaster)/cols + 1 > rows - nstack%rows)
+					cols = nstack/rows + 1;
+				cw = cols ? (m->ww - mw) / cols : m->ww - mw;
 				cx = m->wx + mw + cn*cw;
-				cy = m->wy + rn*ch;
-				resize(c, cx, cy, cw - 2 * c->bw, ch - 2 * c->bw, False);
-				++rn;
-				if(rn >= rows) {
-					rn = 0;
-					cn++;
+				cy = m->wy + rn*rh;
+				resize(c, cx, cy, cw - c->bw, rh - c->bw, False);
+				++cn;
+				if(cn >= cols) {
+					cn = 0;
+					rn++;
 				}
 			}
 	}
