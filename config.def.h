@@ -14,8 +14,8 @@ static const int swallowfloating    = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Liberation Mono:size=8",
-					"SymbolsNerdFont:size=10",
-					"Noto Color Emoji:pixelsize=16",
+					"Symbols Nerd Font:size=10",
+					"Noto Color Emoji:pixelsize=10",
 					};
 static const char dmenufont[]       = "monospace:size=8";
 static char normbgcolor[]           = "#222222";
@@ -41,9 +41,11 @@ static char *colors[][3] = {
 };
 
 static const char *const autostart[] = {
-	//"autorandr", "3monscaled", NULL,
 	"picom", NULL,
+	"dunst", NULL,
 	"dwmblocks", NULL,
+	"/home/wardac/.local/bin/3bgs.sh", NULL,
+	"imwheel", NULL,
 	"xbanish", NULL,
 	"/home/wardac/.local/bin/3bgs.sh",
 	NULL /* terminate */
