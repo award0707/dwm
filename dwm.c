@@ -269,6 +269,7 @@ static unsigned int getsystraywidth();
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void gridstack(Monitor *m);
 static int handlexevent(struct epoll_event *ev);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
@@ -326,6 +327,7 @@ static void tilewide(Monitor *m);
 static void togglebar(const Arg *arg);
 static void toggleextrabar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglescratch(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -430,6 +432,7 @@ struct Pertag {
 #include "yajl_dumps.c"
 #include "ipc.c"
 #endif
+static unsigned int scratchtag = 1 << LENGTH(tags);
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
@@ -1639,6 +1642,84 @@ grabkeys(void)
 	}
 }
 
+void
+gridstack(Monitor *m)
+{
+	/* hack the tile and grid layouts together */
+	unsigned int cols, rows, cn, rn, rh, cw, cx, cy, nstack;
+	unsigned int i, n, h, mw, my;
+	unsigned int gap;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	gap = m->pertag->drawwithgaps[m->pertag->curtag] ? m->pertag->gappx[m->pertag->curtag] : 0;
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww - gap;
+
+	nstack = n - m->nmaster;
+
+	/* grid dimensions */
+	if (nstack == 3 || nstack == 5) rows = 2; /* override grid calc for these cases */
+	else
+		for(rows = 0; rows <= nstack/2; rows++)
+			if(rows*rows >= nstack) break;
+	cols = rows ? nstack/rows : 0;
+
+	/* window geometries */
+	rh = rows ? (m->wh - gap)/rows : m->wh - gap;
+	cn = 0; /* current column number */
+	rn = 0; /* current row number */
+
+	if (m->pertag->drawwithgaps[m->pertag->curtag]) {
+		for (i = 0, my = gap, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+			if (i < m->nmaster) {
+				h = (m->wh - my) / (MIN(n, m->nmaster) - i) - gap;
+				resize(c, m->wx + gap, m->wy + my, mw - 2*c->bw - gap, h - 2*c->bw, False);
+				if (my + HEIGHT(c) + gap < m->wh)
+					my += HEIGHT(c) + gap;
+			} else {
+				if((i - m->nmaster)/cols + 1 > rows - nstack%rows)
+					cols = nstack/rows + 1;
+				cw = cols ? (m->ww - mw - gap) / cols : m->ww - mw - gap;
+				cx = m->wx + mw + cn*cw;
+				cy = m->wy + rn*rh;
+				resize(c, cx + gap, cy + gap, cw - 2 * c->bw - gap, rh - 2 * c->bw - gap, False);
+				++cn;
+				if(cn >= cols) {
+					cn = 0;
+					rn++;
+				}
+			}
+	} else {
+		for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+			if (i < m->nmaster) {
+				h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+				if (n == 1)
+					resize(c, m->wx - c->bw, m->wy, m->ww - c->bw, m->wh - c->bw, False);
+				else
+					resize(c, m->wx - c->bw, m->wy + my, mw - c->bw, h - c->bw, False);
+				my += HEIGHT(c) - c->bw;
+			} else {
+				if((i - m->nmaster)/cols + 1 > rows - nstack%rows)
+					cols = nstack/rows + 1;
+				cw = cols ? (m->ww - mw) / cols : m->ww - mw;
+				cx = m->wx + mw + cn*cw;
+				cy = m->wy + rn*rh;
+				resize(c, cx, cy, cw - c->bw, rh - c->bw, False);
+				++cn;
+				if(cn >= cols) {
+					cn = 0;
+					rn++;
+				}
+			}
+	}
+}
+
 int
 handlexevent(struct epoll_event *ev)
 {
@@ -1777,6 +1858,14 @@ manage(Window w, XWindowAttributes *wa)
 	c->y = MAX(c->y, ((c->mon->by == c->mon->my) && (c->x + (c->w / 2) >= c->mon->wx)
 		&& (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? bh : c->mon->my);
 	c->bw = borderpx;
+
+	selmon->tagset[selmon->seltags] &= ~scratchtag;
+	if (!strcmp(c->name, scratchpadname)) {
+		c->mon->tagset[c->mon->seltags] |= c->tags = scratchtag;
+		c->isfloating = True;
+		c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
+		c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
+	}
 
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
@@ -2690,6 +2779,7 @@ spawn(const Arg *arg)
 {
 	if (arg->v == dmenucmd || arg->v == drundmenucmd)
 		dmenumon[0] = '0' + selmon->num;
+	selmon->tagset[selmon->seltags] &= ~scratchtag;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -2876,6 +2966,28 @@ togglefloating(const Arg *arg)
 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
 			selmon->sel->w, selmon->sel->h, 0);
 	arrange(selmon);
+}
+
+void
+togglescratch(const Arg *arg)
+{
+	Client *c;
+	unsigned int found = 0;
+
+	for (c = selmon->clients; c && !(found = c->tags & scratchtag); c = c->next);
+	if (found) {
+		unsigned int newtagset = selmon->tagset[selmon->seltags] ^ scratchtag;
+		if (newtagset) {
+			selmon->tagset[selmon->seltags] = newtagset;
+			focus(NULL);
+			arrange(selmon);
+		}
+		if (ISVISIBLE(c)) {
+			focus(c);
+			restack(selmon);
+		}
+	} else
+		spawn(arg);
 }
 
 void

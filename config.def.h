@@ -24,7 +24,7 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#005577";
+static char selbordercolor[]        = "#0088aa";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -79,11 +79,12 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ "[][D]",      deck },
+	//{ "[][D]",      deck },
 	{ "[][]=",    tilewide },
 	{ "|M|",      centeredmaster },
 	{ ">M>",      centeredfloatingmaster },
 	{ "###",      gaplessgrid },
+	{ "[]#",      gridstack },
 	{ NULL,       NULL },
 };
 
@@ -108,8 +109,11 @@ static const char *drundmenucmd[] = { "dmenu_drun", NULL };
 static const char *termcmd[]  = { "st", NULL };
 //static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
 static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
+static const char *speedcrunchcmd[] = { "speedcrunch", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *themesel[] = { "theme", NULL }; // my shell script
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -119,8 +123,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = scrotcmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
-	//{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_b,      toggleextrabar, {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -138,7 +142,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY,                       XK_n,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[5]} },
 	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[6]} },
