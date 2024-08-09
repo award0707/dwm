@@ -111,6 +111,8 @@ static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
 static const char *speedcrunchcmd[] = { "speedcrunch", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *themesel[] = { "theme", NULL }; // my shell script
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -123,6 +125,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_KP_Add, spawn,          {.v = speedcrunchcmd } },
 	{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
