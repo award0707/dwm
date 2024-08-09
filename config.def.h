@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 0, 20, 20, 0, 10, 50, 20, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const int startwithgaps[]    = { 0 };	/* 1 means gaps are used by default, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0, 20, 20, 0, 10, 30, 20, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -45,7 +45,9 @@ static char *colors[][3] = {
 static const char *const autostart[] = {
 	"3bgs.sh", NULL,
 	"picom", NULL,
+	"xbindkeys", NULL,
 	"xbanish", NULL,
+	"dwm_bar.sh", NULL,
 	NULL /* terminate */
 };
 
@@ -100,7 +102,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-b", "-i", NULL };
 static const char *drundmenucmd[] = { "dmenu_drun", NULL };
 //static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
