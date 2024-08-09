@@ -58,3 +58,7 @@ i have some scripts i use to swap themes using the xrdb and ipc patches, i
 doubt even 1 soul will find this but if you are interested make an issue and
 i'll publish them.
 
+this is the laptop configuration branch
+- changed some hotkeys and font sizes
+- no dwmblocks, instead using slstatus or dwm-bar
+- installed extrabar patch bc laptop has more status info (wifi, battery)
