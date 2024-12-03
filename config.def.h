@@ -1,9 +1,10 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 30, 30, 10, 10, 0, 0, 0, 0, 40 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int gappx[]   = { 30, 30, 20, 20, 10, 10, 0, 0, 40 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -13,9 +14,9 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:size=8",
-					"SymbolsNerdFont:size=10",
-					"Noto Color Emoji:pixelsize=16",
+static const char *fonts[]          = { "Source Code Pro:size=8:style=Regular",
+					"SymbolsNerdFont:size=8",
+					"Noto Color Emoji:pixelsize=14",
 					};
 static const char dmenufont[]       = "monospace:size=8";
 static char normbgcolor[]           = "#222222";
@@ -44,6 +45,7 @@ static const char *const autostart[] = {
 	"picom", NULL,
 	"dwmblocks", NULL,
 	"xbanish", NULL,
+	"sxhkd", NULL,
 	"/home/wardac/.local/bin/wp.sh",
 	NULL /* terminate */
 };
@@ -100,18 +102,12 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-//static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", NULL };
 static const char *drundmenucmd[] = { "dmenu_drun", NULL };
-//static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
-static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
-static const char *speedcrunchcmd[] = { "speedcrunch", NULL };
-static const char *browsercmd[] = { "firefox", NULL };
-static const char *themesel[] = { "theme", NULL }; // my shell script
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+//static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -119,11 +115,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = drundmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = scrotcmd } },
-	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
-	{ MODKEY|ShiftMask,             XK_KP_Add, spawn,          {.v = speedcrunchcmd } },
-	{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
-	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
+	//{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
 	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
