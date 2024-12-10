@@ -1298,32 +1298,19 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - tw - stw - x) > bh) {
 		if (n > 0) {
-			tw = TEXTW(m->sel->name) + lrpad;
-			mw = (tw >= w || n == 1) ? 0 : (w - tw) / (n - 1);
-
-			i=0;
-			for (c = m->clients; c; c = c->next) {
-				if (!ISVISIBLE(c) || c == m->sel)
-					continue;
-				tw = TEXTW(c->name);
-				if (tw < mw)
-					ew += mw - tw;
-				else
-					++i;
-			}
-
-			if (i > 0)
-				mw += ew / i;
-
+			mw = w / n;
 			for (c = m->clients; c; c = c->next) {
 				if (!ISVISIBLE(c))
 					continue;
-				tw = MIN(m->sel == c ? w : mw, TEXTW(c->name));
+				tw = mw;
 				drw_setscheme(drw, scheme[m == selmon && m->sel == c ? SchemeSel : SchemeNorm]);
 				if (tw > lrpad / 2) {
 					drw_text(drw, x, 0, tw, bh, lrpad / 2, c->name, 0);
-					if (n > 1 && m->sel == c)
-						drw_rect(drw, x, 0, tw, bh, 0, 0);
+					/* if (n > 1 && m->sel == c) */
+					/* 	drw_rect(drw, x, 0, tw, bh, 0, 0); */
+					XSetForeground(drw->dpy, drw->gc, drw->scheme[ColBorder].pixel);
+					XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, 0, 1, bh);
+					XFillRectangle(drw->dpy, drw->drawable, drw->gc, x + w, 0, 1, bh);
 				}
 				if (c->isfloating)
 					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
@@ -1331,9 +1318,8 @@ drawbar(Monitor *m)
 				w -= tw;
 			}
 		}
-		drw_setscheme(drw,scheme[SchemeNorm]);
+		drw_setscheme(drw,scheme[m == selmon ? SchemeSel : SchemeNorm]);
 		drw_rect(drw, x, 0, w, bh, 1, 1);
-
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
 }

@@ -14,7 +14,7 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Source Code Pro:size=8:style=Regular",
+static const char *fonts[]          = { "Fira Code:size=8",//"Source Code Pro:size=8:style=Regular",
 					"SymbolsNerdFont:size=8",
 					"Noto Color Emoji:pixelsize=14",
 					};
