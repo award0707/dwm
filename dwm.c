@@ -107,8 +107,9 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeRev,
-       Red, Yellow, Orange, Green, Cyan, Blue, Violet, Magenta, Urgent }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeRev, /* color schemes */
+       Red, Yellow, Orange, Green, Cyan, Blue, Violet, Magenta, Urgent, /* 3-11 */
+       SchemeBorder, SchemeBorderSel }; 
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
@@ -1256,7 +1257,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 void
 drawbar(Monitor *m)
 {
-	int x, w, tw = 0, stw = 0, mw, ew = 0;
+	int x, w, tw = 0, stw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0, n = 0;
@@ -1284,7 +1285,8 @@ drawbar(Monitor *m)
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ?
+				(m == selmon ? SchemeBorderSel : SchemeSel) : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
 			drw_rect(drw, x + boxs, boxs, boxw, boxw,
@@ -1297,29 +1299,14 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - stw - x) > bh) {
-		if (n > 0) {
-			mw = w / n;
-			for (c = m->clients; c; c = c->next) {
-				if (!ISVISIBLE(c))
-					continue;
-				tw = mw;
-				drw_setscheme(drw, scheme[m == selmon && m->sel == c ? SchemeSel : SchemeNorm]);
-				if (tw > lrpad / 2) {
-					drw_text(drw, x, 0, tw, bh, lrpad / 2, c->name, 0);
-					/* if (n > 1 && m->sel == c) */
-					/* 	drw_rect(drw, x, 0, tw, bh, 0, 0); */
-					XSetForeground(drw->dpy, drw->gc, drw->scheme[ColBorder].pixel);
-					XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, 0, 1, bh);
-					XFillRectangle(drw->dpy, drw->drawable, drw->gc, x + w, 0, 1, bh);
-				}
-				if (c->isfloating)
-					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
-				x += tw;
-				w -= tw;
-			}
+		drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+		if (m->sel) {
+			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+			if (m->sel->isfloating)
+				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+		} else {
+			drw_rect(drw, x, 0, w, bh, 1, 1);
 		}
-		drw_setscheme(drw,scheme[m == selmon ? SchemeSel : SchemeNorm]);
-		drw_rect(drw, x, 0, w, bh, 1, 1);
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
 }

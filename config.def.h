@@ -27,18 +27,20 @@ static char selbordercolor[]        = "#0088aa";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
-       [SchemeRev]  = { selbgcolor,  selfgcolor,  selbordercolor  },
-       [Red]        = { "#dc322f", normbgcolor, normbordercolor   },
-       [Orange]     = { "#cb4b16", normbgcolor, normbordercolor   },
-       [Yellow]     = { "#b58900", normbgcolor, normbordercolor   },
-       [Green]      = { "#859900", normbgcolor, normbordercolor   },
-       [Cyan]       = { "#2aa198", normbgcolor, normbordercolor   },
-       [Blue]       = { "#268bd2", normbgcolor, normbordercolor   },
-       [Violet]     = { "#6c71c4", normbgcolor, normbordercolor   },
-       [Magenta]    = { "#d33682", normbgcolor, normbordercolor   },
-       [Urgent]     = { "#ffffff", "#ff0000"  , normbordercolor   },
+       [SchemeNorm]      = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]       = { selfgcolor,  selbgcolor,  selbordercolor  },
+       [SchemeRev]       = { selbgcolor,  selfgcolor,  selbordercolor  },
+       [SchemeBorderSel] = { selbordercolor, selbgcolor, normbordercolor }, 
+       [SchemeBorder]    = { selbordercolor, normbgcolor, normbordercolor },
+       [Red]             = { "#dc322f", normbgcolor, normbordercolor   },
+       [Orange]          = { "#cb4b16", normbgcolor, normbordercolor   },
+       [Yellow]          = { "#b58900", normbgcolor, normbordercolor   },
+       [Green]           = { "#859900", normbgcolor, normbordercolor   },
+       [Cyan]            = { "#2aa198", normbgcolor, normbordercolor   },
+       [Blue]            = { "#268bd2", normbgcolor, normbordercolor   },
+       [Violet]          = { "#6c71c4", normbgcolor, normbordercolor   },
+       [Magenta]         = { "#d33682", normbgcolor, normbordercolor   },
+       [Urgent]          = { "#ffffff", "#ff0000"  , normbordercolor   },
 };
 
 static const char *const autostart[] = {
