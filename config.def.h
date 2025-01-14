@@ -2,7 +2,7 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static unsigned int borderpx  = 6;        /* border pixel of windows */
 static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
 static const unsigned int gappx[]   = { 0, 0, 0, 0, 0, 0, 0, 20, 20 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -14,7 +14,7 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Fira Code:size=8",//"Source Code Pro:size=8:style=Regular",
+static const char *fonts[]          = { "Liberation Mono:size=8",//"Source Code Pro:size=8:style=Regular",
 					"SymbolsNerdFont:size=8",
 					"Noto Color Emoji:pixelsize=14",
 					};
@@ -48,7 +48,8 @@ static const char *const autostart[] = {
 	"dwmblocks", NULL,
 	"xbanish", NULL,
 	"sxhkd", NULL,
-	"/home/wardac/.local/bin/wp.sh",
+	"/home/wardac/.local/bin/theme dwm",
+	// "/home/wardac/.local/bin/wp.sh",
 	NULL /* terminate */
 };
 
@@ -146,6 +147,9 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = +1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_minus,  setborderpx,    {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_equal,   setborderpx,    {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_numbersign, setborderpx,    {.i = 0 } },
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -10 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +10 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
