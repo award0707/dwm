@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const int startwithgaps[]    = { 0 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 0, 20, 20, 0, 10, 30, 20, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int borderpx  = 6;        /* border pixel of windows */
+static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -114,6 +114,7 @@ static const char *browsercmd[] = { "firefox", NULL };
 static const char *themesel[] = { "theme", NULL }; // my shell script
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+static const char *togglerotcmd[] = { "togglerot", NULL }; // toggle rotation
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -125,6 +126,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
 	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_F5,     spawn,          {.v = togglerotcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_b,      toggleextrabar, {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -159,7 +161,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+	//{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -180,10 +182,10 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-//      { ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+        { ClkStatusText,        0,              Button2,        spawn,          {.v = togglerotcmd } },
 //	{ ClkExBarLeftStatus,   0,              Button2,        spawn,          {.v = termcmd } },
 //	{ ClkExBarMiddle,       0,              Button2,        spawn,          {.v = termcmd } },
-//	{ ClkExBarRightStatus,  0,              Button2,        spawn,          {.v = termcmd } },
+//	{ ClkExBarRightStatus,  0,              Button2,        spawn,          {.v = togglerotcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
