@@ -1,9 +1,10 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const int startwithgaps[]    = { 0 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };   /* default gap between windows in pixels, this can be customized for each tag */
+static unsigned int borderpx  = 6;        /* border pixel of windows */
+static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0, 0, 0, 0, 0, 0, 0, 20, 20 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -26,18 +27,20 @@ static char selbordercolor[]        = "#0088aa";
 static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
-       [SchemeRev]  = { selbgcolor,  selfgcolor,  selbordercolor  },
-       [Red]        = { "#dc322f", normbgcolor, normbordercolor   },
-       [Orange]     = { "#cb4b16", normbgcolor, normbordercolor   },
-       [Yellow]     = { "#b58900", normbgcolor, normbordercolor   },
-       [Green]      = { "#859900", normbgcolor, normbordercolor   },
-       [Cyan]       = { "#2aa198", normbgcolor, normbordercolor   },
-       [Blue]       = { "#268bd2", normbgcolor, normbordercolor   },
-       [Violet]     = { "#6c71c4", normbgcolor, normbordercolor   },
-       [Magenta]    = { "#d33682", normbgcolor, normbordercolor   },
-       [Urgent]     = { "#ffffff", "#ff0000"  , normbordercolor   },
+       [SchemeNorm]      = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]       = { selfgcolor,  selbgcolor,  selbordercolor  },
+       [SchemeRev]       = { selbgcolor,  selfgcolor,  selbordercolor  },
+       [SchemeBorderSel] = { selbordercolor, selbgcolor, normbordercolor }, 
+       [SchemeBorder]    = { selbordercolor, normbgcolor, normbordercolor },
+       [Red]             = { "#dc322f", normbgcolor, normbordercolor   },
+       [Orange]          = { "#cb4b16", normbgcolor, normbordercolor   },
+       [Yellow]          = { "#b58900", normbgcolor, normbordercolor   },
+       [Green]           = { "#859900", normbgcolor, normbordercolor   },
+       [Cyan]            = { "#2aa198", normbgcolor, normbordercolor   },
+       [Blue]            = { "#268bd2", normbgcolor, normbordercolor   },
+       [Violet]          = { "#6c71c4", normbgcolor, normbordercolor   },
+       [Magenta]         = { "#d33682", normbgcolor, normbordercolor   },
+       [Urgent]          = { "#ffffff", "#ff0000"  , normbordercolor   },
 };
 
 static const char *const autostart[] = {
@@ -47,7 +50,9 @@ static const char *const autostart[] = {
 	"/home/wardac/.local/bin/3bgs.sh", NULL,
 	"imwheel", NULL,
 	"xbanish", NULL,
-	"/home/wardac/.local/bin/3bgs.sh",
+	"sxhkd", NULL,
+	"/home/wardac/.local/bin/theme dwm",
+	// "/home/wardac/.local/bin/wp.sh",
 	NULL /* terminate */
 };
 
@@ -103,16 +108,12 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-//static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", "-c", "-l", "20", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-p", "dmenu", NULL };
 static const char *drundmenucmd[] = { "dmenu_drun", NULL };
-//static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
-static const char *scrotcmd[] = { "gnome-screenshot", "-i", NULL };
-static const char *speedcrunchcmd[] = { "speedcrunch", NULL };
-static const char *browsercmd[] = { "firefox", NULL };
-static const char *themesel[] = { "theme", NULL }; // my shell script
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+//static const char *tabbedterm[] = { "tabbed", "-k", "-c", "st", "-w", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -120,11 +121,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = drundmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = scrotcmd } },
-	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = browsercmd } },
-	{ MODKEY|ShiftMask,             XK_KP_Add, spawn,          {.v = speedcrunchcmd } },
-	{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
-	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = themesel } },
+	//{ MODKEY|ShiftMask,             XK_backslash, spawn,       {.v = tabbedterm } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -139,13 +137,14 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+	//{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_n,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[5]} },
 	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[6]} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[7]} },
+	{ MODKEY,                       XK_f,      togglefullscreen, {0} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
