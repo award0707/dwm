@@ -61,7 +61,7 @@ void exitdwm ()
 	}
 
 	//if (strcmp (exit_action, S_LOCK) == 0) (void)!system ("slock & sleep .5; xset dpms force off");
-	if (strcmp (exit_action, S_LOCK) == 0) (void)!system ("slock");
+	if (strcmp (exit_action, S_LOCK) == 0) (void)!system ("lock");
 	else if (strcmp (exit_action, S_RESTART_DWM) == 0) quit (& (const Arg) {1});
 	else if (strcmp (exit_action, S_OFFSCREEN) == 0) (void)!system ("sleep .5; xset dpms force off");
 	else if (strcmp (exit_action, S_EXIT) == 0) quit (& (const Arg) {0});

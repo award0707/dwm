@@ -3,7 +3,7 @@
 
 include config.mk
 
-SRC = drw.c dwm.c util.c
+SRC = drw.c dwm.c util.c 
 OBJ = ${SRC:.c=.o}
 
 all: options dwm dwm-msg
@@ -22,7 +22,7 @@ ${OBJ}: config.h config.mk
 config.h:
 	cp config.def.h $@
 
-dwm: ${OBJ}
+dwm: ${OBJ} exitdwm.c
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 dwm-msg: dwm-msg.o

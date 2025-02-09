@@ -48,8 +48,8 @@ static const char *const autostart[] = {
 	"dwmblocks", NULL,
 	"xbanish", NULL,
 	"sxhkd", NULL,
-	"/home/wardac/.local/bin/theme dwm",
-	// "/home/wardac/.local/bin/wp.sh",
+	"/home/wardac/.local/bin/theme.sh", "dwm", NULL,
+	// "/home/wardac/.local/bin/wp.sh", NULL,
 	NULL /* terminate */
 };
 
