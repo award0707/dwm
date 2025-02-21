@@ -1,0 +1,5 @@
+#!/bin/sh
+( slock && xset dpms 600 600 600 ) &
+xset dpms 0 0 5
+xset dpms force off
+

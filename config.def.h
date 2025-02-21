@@ -47,12 +47,11 @@ static const char *const autostart[] = {
 	"picom", NULL,
 	"dunst", NULL,
 	"dwmblocks", NULL,
-	//"/home/wardac/.local/bin/3bgs.sh", NULL,
 	"imwheel", NULL,
 	"xbanish", NULL,
 	"sxhkd", NULL,
-	"/home/wardac/.local/bin/theme dwm",
-	"/home/wardac/.local/bin/wp.sh",
+	"/home/wardac/.local/bin/theme dwm", NULL,
+	"/home/wardac/.local/bin/wp.sh", NULL,
 	NULL /* terminate */
 };
 
