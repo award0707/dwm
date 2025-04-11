@@ -4,7 +4,7 @@
 /* appearance */
 static unsigned int borderpx  = 6;        /* border pixel of windows */
 static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
-static const unsigned int gappx[]   = { 0, 0, 0, 0, 0, 0, 0, 20, 20 };   /* default gap between windows in pixels, this can be customized for each tag */
+static const unsigned int gappx[]   = { 0 };   /* default gap between windows in pixels, this can be customized for each tag */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft  = 0;   /* 0: systray in the right corner, >0: systray on left of status text */
@@ -48,13 +48,13 @@ static const char *const autostart[] = {
 	"dwmblocks", NULL,
 	"xbanish", NULL,
 	"sxhkd", NULL,
-	"/home/wardac/.local/bin/theme.sh", "dwm", NULL,
-	// "/home/wardac/.local/bin/wp.sh", NULL,
+	"/home/wardac/.local/bin/theme", "dwm", NULL,
+	"/home/wardac/.local/bin/wp.sh", NULL,
 	NULL /* terminate */
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -151,7 +151,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -10 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +10 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
-	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
+	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE } },
+	{ MODKEY|ControlMask,           XK_equal,  setgappx,       {.i = 180 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },

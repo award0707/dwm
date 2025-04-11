@@ -305,6 +305,7 @@ static void setclienttagprop(Client *c);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setgaps(const Arg *arg);
+static void setgappx(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setlayoutsafe(const Arg *arg);
 static void setmfact(const Arg *arg);
@@ -1958,7 +1959,7 @@ monocle(Monitor *m)
 			          m->wh - 2 * (c->bw + selmon->pertag->gappx[m->pertag->curtag]),
 			          0);
 		else
-			resize(c, m->wx - c->bw, m->wy, m->ww, m->wh, False);
+			resize(c, m->wx - c->bw, m->wy, m->ww, m->wh - c->bw, False);
 }
 
 void
@@ -2549,6 +2550,13 @@ setgaps(const Arg *arg)
 }
 
 void
+setgappx(const Arg *arg)
+{
+	selmon->pertag->gappx[selmon->pertag->curtag] = arg->i;
+	arrange(selmon);
+}
+
+void
 setlayout(const Arg *arg)
 {
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
@@ -2900,9 +2908,11 @@ tile(Monitor *m)
 	        for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 	                if (i < m->nmaster) {
 	                        h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-	                        if (n == 1)
-	                                resize(c, m->wx - c->bw, m->wy, m->ww, m->wh, False);
-	                        else
+	                        if (n == 1) /* might be able to combine this with the next case */
+	                                resize(c, m->wx - c->bw, m->wy, m->ww, m->wh - c->bw, False);
+				else if (n <= m->nmaster) /* 1 column */
+	                                resize(c, m->wx - c->bw, m->wy + my, mw, h - c->bw, False);
+				else
 	                                resize(c, m->wx - c->bw, m->wy + my, mw - c->bw, h - c->bw, False);
 	                        my += HEIGHT(c) - c->bw;
 	                } else {
