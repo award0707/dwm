@@ -1802,12 +1802,6 @@ loadxrdb()
 				XRDB_LOAD_COLOR("dwm.selbordercolor", selbordercolor);
 				XRDB_LOAD_COLOR("dwm.selbgcolor", selbgcolor);
 				XRDB_LOAD_COLOR("dwm.selfgcolor", selfgcolor);
-
-				XrmGetResource(xrdb, "dwm.borderpx", "*", &type, &value);
-				if (value.addr != NULL && !strncmp("String", type, 64))
-					borderpx = strtoul(value.addr, NULL, 10);
-				else
-					borderpx = 1;
 			}
 		}
 	}
@@ -3821,7 +3815,7 @@ xrdb(const Arg *arg)
 	loadxrdb();
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
-	setborderpx(&((Arg) {0}));
+	//setborderpx(&((Arg) {0}));
 	focus(NULL);
 	arrange(NULL);
 }
